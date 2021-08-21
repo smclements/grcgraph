@@ -101,7 +101,7 @@ var COMPARONOMIC = (function() {
             saveimagecanvas = document.createElement("canvas");
             saveimagecanvas.width=2280;
             saveimagecanvas.height=2000;
-/** try and add a footer to saved graph **/
+            /** try and add a footer to saved graph **/
             saveimagecanvas_txt = saveimagecanvas.getContext("2d");
             saveimagecanvas_txt.font = "14px Georgia";
             saveimagecanvas_txt.fillText = ("Create your own Comparonomic at comparonomic.com", 10, 50);
@@ -112,6 +112,11 @@ var COMPARONOMIC = (function() {
         }
 
         svg.selectAll("*").remove();
+
+        if (!canRenderCurrentQuestion()) {
+            formDetailsLoad();
+            return;
+        }
 
         var titlegroup = svg
             .append("g")
@@ -359,8 +364,6 @@ var COMPARONOMIC = (function() {
                 .attr("r", 4);
         }
 
-        if (!currentQuestion || currentQuestion.comparisons.length < 1) return;
-
         buildSlider(left, y1, true);
         buildSlider(right, y2, false);
     }
@@ -494,7 +497,6 @@ var COMPARONOMIC = (function() {
      * @param {string} value 
      */
     function editChart(part,value){
-        console.log(">>>> edit chart");
         currentQuestion = getCurrentQuestion();
         if (!currentQuestion) return;
         if (currentQuestion.hasOwnProperty(part)){
@@ -523,8 +525,9 @@ var COMPARONOMIC = (function() {
         let canDelete = currentQuestion.uid > 0;
         let canNew = canDelete;
         let canSwitch = questions.length > 1;
+        let updateMode = currentQuestion.uid > 0;
         
-        setButtonState(canSave,canDelete,canNew,canSwitch);
+        setButtonState(canSave,canDelete,canNew,canSwitch,updateMode);
     }
 
     /**
